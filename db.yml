@@ -1,0 +1,53 @@
+RTVE2018Dev2:
+  - /vol/work3/maurice/AlbayzinEvaluationIberSPEECH-RTVE2018/data/RTVE2018DB/dev2/audio/{uri}-mono-16000.wav
+  - /vol/work3/maurice/AlbayzinEvaluationIberSPEECH-RTVE2018/data/RTVE2018DB/dev2/enrollment/*/{uri}-16000.wav
+
+Lipreadingword:
+  - /vol/work1/maurice/datasetBBC/The_BBC-Oxford_Lip_Reading_in_the_Wild_LRW_Dataset/{uri}.wav
+
+Lipreadingsentence:
+  - /vol/work1/maurice/datasetBBC/The_BBC-Oxford_Multi-View_Lip_Reading_Sentences_MV-LRS_Dataset/main/{uri}.wav
+  - /vol/work1/maurice/datasetBBC/The_BBC-Oxford_Multi-View_Lip_Reading_Sentences_MV-LRS_Dataset/pretrain/{uri}.wav
+
+Etape:
+  - /vol/corpora4/etape/etape-anr.lne.fr/dga-etape-rev00/*/audio/{uri}.wav
+  - /vol/corpora4/etape/etape-anr.lne.fr/elda-etape-rev00/ETAPE/DATA/*/{uri}.wav
+  - /vol/corpora4/etape/etape-anr.lne.fr/etape-evaluation/audio/{uri}.wav
+
+AMI: /vol/corpora3/ami/amicorpus/*/audio/{uri}.wav
+
+BBC: /vol/work1/yin/TRECVid/test/audio/{uri}.wav
+
+Eastenders: /vol/work1/yin/TRECVid/Eastenders/audio/{uri}.wav
+
+Etape: 
+  - /people/barras/diarization/wav/rt04f-dev-en/{uri}.sph
+  - /people/barras/diarization/wav/rt04f-tst-en/{uri}.sph
+  - /people/barras/diarization/wav/hub4e96-trn-en/{uri}.sph
+  - /people/barras/diarization/wav/hub4e97-trn-en/{uri}.sph
+
+REPERE: 
+  - "/vol/corpora4/mediaeval/2015/PersonDiscoveryTask/REPERE/DATA/SOURCE DATA/DEV/AUDIO/*/{uri}.wav"
+  - "/vol/corpora4/mediaeval/2015/PersonDiscoveryTask/REPERE/DATA/SOURCE DATA/TEST/AUDIO/*/{uri}.wav"
+  - "/vol/corpora4/mediaeval/2015/PersonDiscoveryTask/REPERE/DATA/SOURCE DATA/TRAIN/AUDIO/{uri}.wav"
+
+Ester: 
+  - /vol/corpora3/ester/audio/{uri}.wav
+  - /vol/corpora3/ester/eval05/DATA/{uri}.WAV
+  - /vol/corpora3/ester2/ftp.etca.fr/ESTER2/corpus/dev/audio/{uri}.wav
+  - /vol/corpora3/ester2/ftp.etca.fr/ESTER2/corpus/test/audio/{uri}.wav
+  - /vol/corpora3/ester2/ftp.etca.fr/ESTER2/corpus/train/train_v2/audio_train_v2/{uri}.wav
+
+GameOfThrones: /vol/corpora4/tvseries/tvd/GameOfThrones/dvd/rip/audio/{uri}.en.wav
+
+FISHATD5: /vol/corpora1/data/ldc/ldc2006s29/data/*/{uri}.sph
+FISHE1: /vol/work1/bredin/corpus/FISHE1/data/{uri}.sph
+MIX04: /vol/corpora1/data/nist/sre/sre-04/t*/data/{uri}.sph
+MIX05: /vol/corpora1/data/nist/sre/sre-05/data/t*/data/{uri}.sph
+MIX06: /vol/corpora1/data/nist/sre/sre-06/data/t*/data/{uri}.sph
+MIX08: /vol/corpora1/data/nist/sre/sre-08/sp08-11/t*/data/short*/{uri}.sph
+MIX10: /vol/corpora1/data/nist/sre/sre-10/data/phonecall/tel/{uri}.sph
+SWCELLP1: /vol/corpora3/cts_english/swbcell1/speech/{uri}.sph
+SWCELLP2: /vol/corpora3/cts_english/swbcell2/{uri}.sph
+SWPH2: /vol/corpora3/cts_english/swb2_II/speech/{uri}.sph
+SWPH3: /vol/corpora3/cts_english/swb2_III/data/{uri}.sph

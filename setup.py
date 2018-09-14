@@ -25,21 +25,21 @@
 #
 # AUTHORS
 # Hervé BREDIN - http://herve.niderb.fr/
-
+# Benjamin MAURICE - maurice@limsi.fr
 
 import versioneer
 from setuptools import setup, find_packages
 
 setup(
     # replace "mydatabase" by the name of your database
-    name='pyannote.db.mydatabase',
+    name='pyannote.db.RTVE2018Dev2',
 
     # replace "MyDatabase" by the name of your database
-    description="MyDatabase plugin for pyannote-database",
+    description="RTVE2018Dev2 plugin for pyannote-database",
 
     # replace with your information
-    author='Hervé Bredin',
-    author_email='bredin@limsi.fr',
+    author='Benjamin MAURICE',
+    author_email='maurice@limsi.fr',
 
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
@@ -47,7 +47,7 @@ setup(
 
     # replace "MyDatabase" by the new name of MyDatabase directory
     package_data={
-        'MyDatabase': [
+        'RTVE2018Dev2': [
             'data/*',
         ],
     },
@@ -71,6 +71,6 @@ setup(
     # replace MyDatabase by the name of your database (using CamelCase)
     entry_points="""
         [pyannote.database.databases]
-        MyDatabase=MyDatabase:MyDatabase
+        RTVE2018Dev2=RTVE2018Dev2:RTVE2018Dev2
     """
 )
