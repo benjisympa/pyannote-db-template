@@ -87,6 +87,8 @@ class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
 
         rttms = {}
         for path in listdir(os.join(data_dir, 'rttm')):
+            if 'FACEREF' in path:
+                continue
             rttm = read_rttm_file(path)
             uri = rttm.data['uri'].iloc[0]
             annotation = Annotation()
