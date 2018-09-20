@@ -35,8 +35,9 @@ import os.path as op
 from pyannote.core import Segment, Timeline
 from pyannote.database import Database
 from pyannote.database.protocol import SpeakerSpottingProtocol, SpeakerDiarizationProtocol
-from pyannote.parser import MDTMParser
 from pandas import read_table
+from os import listdir
+import os
 
 # this protocol defines a speaker diarization protocol: as such, a few methods
 # needs to be defined: trn_iter, dev_iter, and tst_iter.
@@ -53,30 +54,58 @@ class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
     """
 
     def __init__(self, preprocessors={}, **kwargs):
-        super(RTVE2018SpeakerSpottingProtocol, self).__init__(
+        super(RTVE2018SpeakerSpottingProtocolAll, self).__init__(
             preprocessors=preprocessors, **kwargs)
-        #self.em_parser_ = UEMParser()
-        self.mdtm_parser_ = MDTMParser()
 
-    def _subset(self, protocol, subset):
+    def read_rttm_file(self, file):
+        # load whole file
+        df = pandas.read_table(file,
+        delim_whitespace=True,
+        header=None, names=['type', 'uri', 'channel', 'start', 'duration', 'modality', 'confidence', 'label', 'gender'],
+        keep_default_na=False, na_values=[])
+
+        # remove comment lines
+        # (i.e. lines for which all fields are either None or NaN)
+        #keep = [not all(pandas.isnull(item) for item in row[3:4])
+        #        for row in df.itertuples()]
+        #df = df[keep]
+        df.loc[~df['type'].str.contains('-INFO')]
+        return df
+
+    def _subset(self, protocol, corpus, subset):
 
         data_dir = op.join(op.dirname(op.realpath(__file__)), 'data')
 
-        #path = op.join(data_dir, '{protocol}.{subset}.em'.format(subset=subset, protocol=protocol))
-        #uems = self.em_parser_.read(path)
-
         # load annotations
-        path = op.join(data_dir, '{protocol}.{subset}.mdtm'.format(subset=subset, protocol=protocol))
-        mdtms = self.mdtm_parser_.read(path)
+        #path = op.join(data_dir, '{protocol}.{subset}.mdtm'.format(subset=subset, protocol=protocol))
+        #rttms = self.rttm_parser_.read(path)
 
-        path = op.join(data_dir, '{protocol}.{subset}.lst'.format(subset=subset, protocol=protocol))
+        path = op.join(data_dir, '{protocol}.{corpus}.{subset}.lst'.format(subset=subset, corpus=corpus, protocol=protocol))
         with open(path) as f:
             uris = f.readlines()
         uris = [x.strip() for x in uris]
 
+        rttms = {}
+        for path in listdir(os.join(data_dir, 'rttm')):
+            rttm = read_rttm_file(path)
+            uri = rttm.data['uri'].iloc[0]
+            annotation = Annotation()
+            for index, row in rttm.iterrows():
+                annotation[Segment(row['start'], row['start'] + row['duration'])] = row['label']
+            rttms[uri] = annotation
+
+        #By default it take all the file time
+        '''path = op.join(data_dir, '{protocol}.{corpus}.{subset}.time'.format(subset=subset, corpus=corpus, protocol=protocol))
+        with open(path) as f:
+            rows = f.readlines()
+        times = {}
+        for row in rows:
+            kv = row.split(' ')
+            times[kv[0]] = Segment(0, float(kv[1]))'''
+
         for uri in uris:
-            #annotated = uems(uri)
-            annotation = mdtms(uri)
+            #annotated = times[uri]
+            annotation = rttms(uri)
             current_file = {
                 'database': 'RTVE2018',
                 'uri': uri,
@@ -113,10 +142,10 @@ class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
             yield current_enrolment
 
     def trn_iter(self):
-        return self._subset('RTVE2018Dev2', 'train')
+        return self._subset('RTVE2018', 'Dev2', 'train')
 
     def dev_iter(self):
-        return self._subset('RTVE2018Dev2', 'dev')
+        return self._subset('RTVE2018', 'Dev2', 'dev')
 
     def tst_iter(self):
         for _ in []:
@@ -124,7 +153,7 @@ class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
         #return self._subset('RTVE2018', 'test')
 
     def dev_enrol_iter(self):
-        return self._subset_enrollment('RTVE2018Dev2', 'enrollment')
+        return self._subset_enrollment('RTVE2018', 'enrollment')
 
     def trn_enrol_iter(self):
         for _ in []:
@@ -159,5 +188,3 @@ class RTVE2018(Database):
         # register the first protocol: it will be known as
         # MyDatabase.SpeakerDiarization.MyFirstProtocol
         self.register_protocol('SpeakerSpotting', 'all_annotations', RTVE2018SpeakerSpottingProtocolAll)
-
-#        self.register_protocol('SpeakerSpotting', 'without_unknown_annotations', RTVE2018SpeakerSpottingProtocolUnknown)

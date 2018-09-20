@@ -54,7 +54,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'pyannote.database >= 0.11.2',
-        'pyannote.parser >= 0.6.5',
+#        'pyannote.parser >= 0.6.5',
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
