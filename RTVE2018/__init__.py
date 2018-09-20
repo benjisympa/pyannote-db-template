@@ -41,8 +41,8 @@ from pandas import read_table
 # this protocol defines a speaker diarization protocol: as such, a few methods
 # needs to be defined: trn_iter, dev_iter, and tst_iter.
 
-class RTVE2018Dev2SpeakerSpottingProtocol(SpeakerSpottingProtocol):
-    """Speaker diarization protocol for the Albayzin Evaluation of IberSPEECH from RTVE2018 dataset on dev2
+class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
+    """Speaker spotting protocol for the Albayzin Evaluation of IberSPEECH from RTVE2018 dataset on dev2
     Parameters
     ----------
     preprocessors : dict or (key, preprocessor) iterable
@@ -53,7 +53,7 @@ class RTVE2018Dev2SpeakerSpottingProtocol(SpeakerSpottingProtocol):
     """
 
     def __init__(self, preprocessors={}, **kwargs):
-        super(RTVE2018Dev2SpeakerSpottingProtocol, self).__init__(
+        super(RTVE2018SpeakerSpottingProtocol, self).__init__(
             preprocessors=preprocessors, **kwargs)
         #self.em_parser_ = UEMParser()
         self.mdtm_parser_ = MDTMParser()
@@ -72,18 +72,18 @@ class RTVE2018Dev2SpeakerSpottingProtocol(SpeakerSpottingProtocol):
         path = op.join(data_dir, '{protocol}.{subset}.lst'.format(subset=subset, protocol=protocol))
         with open(path) as f:
             uris = f.readlines()
-        uris = [x.strip() for x in uris] 
+        uris = [x.strip() for x in uris]
 
         for uri in uris:
             #annotated = uems(uri)
             annotation = mdtms(uri)
             current_file = {
-                'database': 'RTVE2018Dev2',
+                'database': 'RTVE2018',
                 'uri': uri,
             #    'annotated': annotated,
                 'annotation': annotation}
             yield current_file
-    
+
     def _subset_enrollment(self, protocol, subset):
         data_dir = op.join(op.dirname(op.realpath(__file__)), 'data')
         enrolments = op.join(data_dir, '{protocol}.{subset}.txt'.format(subset=subset, protocol=protocol))
@@ -104,7 +104,7 @@ class RTVE2018Dev2SpeakerSpottingProtocol(SpeakerSpottingProtocol):
             enrol_with = Timeline(segments=segments, uri=uri)
 
             current_enrolment = {
-                'database': 'RTVE2018Dev2',
+                'database': 'RTVE2018',
                 'uri': uri,
                 'model_id': model_id,
                 'enrol_with': enrol_with,
@@ -149,14 +149,15 @@ class RTVE2018Dev2SpeakerSpottingProtocol(SpeakerSpottingProtocol):
 # this is where we define each protocol for this database.
 # without this, `pyannote.database.get_protocol` won't be able to find them...
 
-class RTVE2018Dev2(Database):
+class RTVE2018(Database):
     """Database RTVE2018 on dev2"""
 
     def __init__(self, preprocessors={}, **kwargs):
-        super(RTVE2018Dev2, self).__init__(preprocessors=preprocessors, **kwargs)
+        super(RTVE2018, self).__init__(preprocessors=preprocessors, **kwargs)
         #super().all(*args, **kwargs)
 
         # register the first protocol: it will be known as
         # MyDatabase.SpeakerDiarization.MyFirstProtocol
-        self.register_protocol(
-            'SpeakerSpotting', 'RTVE2018Dev2SpeakerSpottingProtocol', RTVE2018Dev2SpeakerSpottingProtocol)
+        self.register_protocol('SpeakerSpotting', 'all_annotations', RTVE2018SpeakerSpottingProtocolAll)
+
+#        self.register_protocol('SpeakerSpotting', 'without_unknown_annotations', RTVE2018SpeakerSpottingProtocolUnknown)

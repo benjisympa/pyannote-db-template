@@ -32,10 +32,10 @@ from setuptools import setup, find_packages
 
 setup(
     # replace "mydatabase" by the name of your database
-    name='pyannote.db.RTVE2018Dev2',
+    name='pyannote.db.RTVE2018',
 
     # replace "MyDatabase" by the name of your database
-    description="RTVE2018Dev2 plugin for pyannote-database",
+    description="RTVE2018 plugin for pyannote-database",
 
     # replace with your information
     author='Benjamin MAURICE',
@@ -47,7 +47,7 @@ setup(
 
     # replace "MyDatabase" by the new name of MyDatabase directory
     package_data={
-        'RTVE2018Dev2': [
+        'RTVE2018': [
             'data/*',
         ],
     },
@@ -71,6 +71,6 @@ setup(
     # replace MyDatabase by the name of your database (using CamelCase)
     entry_points="""
         [pyannote.database.databases]
-        RTVE2018Dev2=RTVE2018Dev2:RTVE2018Dev2
+        RTVE2018=RTVE2018:RTVE2018
     """
 )
