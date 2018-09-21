@@ -32,7 +32,7 @@ __version__ = get_versions()['version']
 del get_versions
 
 import os.path as op
-from pyannote.core import Segment, Timeline
+from pyannote.core import Segment, Timeline, Annotation
 from pyannote.database import Database
 from pyannote.database.protocol import SpeakerSpottingProtocol, SpeakerDiarizationProtocol
 from pandas import read_table
@@ -41,6 +41,21 @@ import os
 
 # this protocol defines a speaker diarization protocol: as such, a few methods
 # needs to be defined: trn_iter, dev_iter, and tst_iter.
+
+def read_rttm_file(file):
+    # load whole file
+    df = read_table(file,
+    delim_whitespace=True,
+    header=None, names=['type', 'uri', 'channel', 'start', 'duration', 'modality', 'confidence', 'label', 'gender'],
+    keep_default_na=False, na_values=[])
+
+    # remove comment lines
+    # (i.e. lines for which all fields are either None or NaN)
+    #keep = [not all(pandas.isnull(item) for item in row[3:4])
+    #        for row in df.itertuples()]
+    #df = df[keep]
+    df = df.loc[~df['type'].str.contains('-INFO')]
+    return df
 
 class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
     """Speaker spotting protocol for the Albayzin Evaluation of IberSPEECH from RTVE2018 dataset on dev2
@@ -57,21 +72,6 @@ class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
         super(RTVE2018SpeakerSpottingProtocolAll, self).__init__(
             preprocessors=preprocessors, **kwargs)
 
-    def read_rttm_file(self, file):
-        # load whole file
-        df = pandas.read_table(file,
-        delim_whitespace=True,
-        header=None, names=['type', 'uri', 'channel', 'start', 'duration', 'modality', 'confidence', 'label', 'gender'],
-        keep_default_na=False, na_values=[])
-
-        # remove comment lines
-        # (i.e. lines for which all fields are either None or NaN)
-        #keep = [not all(pandas.isnull(item) for item in row[3:4])
-        #        for row in df.itertuples()]
-        #df = df[keep]
-        df.loc[~df['type'].str.contains('-INFO')]
-        return df
-
     def _subset(self, protocol, corpus, subset):
 
         data_dir = op.join(op.dirname(op.realpath(__file__)), 'data')
@@ -86,14 +86,14 @@ class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
         uris = [x.strip() for x in uris]
 
         rttms = {}
-        for path in listdir(os.join(data_dir, 'rttm')):
+        for path in listdir(op.join(data_dir, 'rttm')):
             if 'FACEREF' in path:
                 continue
-            rttm = read_rttm_file(path)
-            uri = rttm.data['uri'].iloc[0]
+            rttm = read_rttm_file(op.join(data_dir, 'rttm', path))
+            uri = rttm['uri'].iloc[0]
             annotation = Annotation()
             for index, row in rttm.iterrows():
-                annotation[Segment(row['start'], row['start'] + row['duration'])] = row['label']
+                annotation[Segment(float(row['start']), float(row['start']) + float(row['duration']))] = row['label']
             rttms[uri] = annotation
 
         #By default it take all the file time
@@ -107,7 +107,7 @@ class RTVE2018SpeakerSpottingProtocolAll(SpeakerSpottingProtocol):
 
         for uri in uris:
             #annotated = times[uri]
-            annotation = rttms(uri)
+            annotation = rttms[uri]
             current_file = {
                 'database': 'RTVE2018',
                 'uri': uri,
